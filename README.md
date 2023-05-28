@@ -76,3 +76,22 @@ q8 0 q9 0 L
 q9 1 q9 1 L
 
 q9 0 q0 0 S
+
+---
+
+f(x,y) = max(x,y)
+
+* q1 1 q2 0 R
+* q2 1 q2 1 R
+* q2 0 q3 0 R
+* q3 1 q3 1 R
+* q3 0 q4 0 L
+* q4 1 q5 0 L
+* q5 1 q5 1 L 
+* q5 0 q6 0 L
+* q6 1 q6 1 L
+* q6 0 q1 1 R
+* q1 0 q7 0 R
+* q7 1 q0 0 R
+* q4 0 q0 0 S
+* q7 0 q7 0 L
