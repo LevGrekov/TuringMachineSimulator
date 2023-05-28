@@ -5,46 +5,80 @@
     private string state;
     private bool auto = true;
     private int InfinityLoopDetector = 0;
+    private bool FunctionType;
 
     private string[][] Programa;
-    public TuringMachine()
+    public TuringMachine(bool FunctionType = true)
     {
+        this.FunctionType = FunctionType;
+
+        GetTType();
         getProgram();
         headPosition = 1;
         state = "q1";
+
     }
 
-    public void getProgram()
+    public void GetTType()
     {
-        Console.WriteLine("Введите Значение X");
-        var x = int.Parse(Console.ReadLine());
-        Console.WriteLine("Введите Значение Y");
-        var y = int.Parse(Console.ReadLine());
-
-        this.tape += "0";
-        for(int i = 0; i < x + 1; i++)
+        if (FunctionType)
         {
-            this.tape += "1";
-        }
-        this.tape += "0";
-        for (int i = 0; i < y + 1; i++)
-        {
-            this.tape += "1";
-        }
-        this.tape += "0";
+            Console.WriteLine("Введите Значение X");
+            var x = int.Parse(Console.ReadLine());
+            Console.WriteLine("Введите Значение Y");
+            var y = int.Parse(Console.ReadLine());
 
-        Console.WriteLine("Введите кол-во команд");
-        var amount = int.Parse(Console.ReadLine());
-      
+            this.tape += "0";
+            for (int i = 0; i < x + 1; i++)
+            {
+                this.tape += "1";
+            }
+            this.tape += "0";
+            for (int i = 0; i < y + 1; i++)
+            {
+                this.tape += "1";
+            }
+            this.tape += "0";
+        }
+        else
+        {
+            Console.WriteLine("Введите Кол-во 1");
+            var x = int.Parse(Console.ReadLine());
+            Console.WriteLine("Введите Кол-во 0");
+            var y = int.Parse(Console.ReadLine());
+
+            this.tape += "B";
+            for (int i = 0; i < x + 1; i++)
+            {
+                this.tape += "1";
+            }
+            for (int i = 0; i < y + 1; i++)
+            {
+                this.tape += "0";
+            }
+            this.tape += "B";
+        }
+
 
         Console.WriteLine("Если хотите чтобы запрос не был автоматическим, введите: 'N' ");
         string auto = Console.ReadLine();
         if (auto == "N") this.auto = false;
+    }
 
+    public void getProgram()
+    {
+
+        Console.WriteLine("Введите кол-во команд");
+        var amount = int.Parse(Console.ReadLine());
 
         Console.WriteLine("Вводите команды в формате q1 1 q2 0 R");
+
+        if (!FunctionType)
+        {
+            Console.WriteLine("Для пустого символа используйте B");
+        }
         string[][] Programa = new string[amount][];
-        for(int i = 0; i < amount; i++)
+        for (int i = 0; i < amount; i++)
         {
             var command = Console.ReadLine();
             Programa[i] = ParseCommand(command);
@@ -68,10 +102,16 @@
     private static int CountOnes(string tape)
     {
         var result = 0;
-        foreach(var ch in tape)
+        
+        foreach (var ch in tape)
         {
-            if (Convert.ToInt32(ch.ToString()) == 1) result++;
+            if (ch != 'B')
+            {
+                if (Convert.ToInt32(ch.ToString()) == 1) result++;
+            }
         }
+        
+
         return result;
     }
 
@@ -84,7 +124,7 @@
             {
                 Console.Clear();
             }
-            
+
             Console.WriteLine(tape.Insert(headPosition, $"({state})"));
 
             if (auto)
@@ -130,7 +170,7 @@
                         InfinityLoopDetector = 0;
                     }
 
-                    state = Programa[i][ 2];
+                    state = Programa[i][2];
                     transitionFound = true;
                     break;
                 }
@@ -140,10 +180,11 @@
             {
                 Console.WriteLine("Ошибка: нет соответствующего перехода для символа {0} в состоянии {1}.", symbol, state);
                 break;
-            }            
+            }
         }
         if (state == "q0")
         {
+            Console.WriteLine(tape.Insert(headPosition, $"({state})"));
             Console.WriteLine("Выполнение завершено.");
         }
         else
@@ -151,7 +192,10 @@
             Console.WriteLine("Ошибка: достигнуто состояние {0}, для которого нет завершающего перехода.", state);
         }
 
-        Console.WriteLine(CountOnes(tape));
+        if (FunctionType)
+        {
+            Console.WriteLine(CountOnes(tape));
+        }
     }
 }
 
@@ -159,8 +203,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        string input = "0001111101000";
-        TuringMachine turingMachine = new TuringMachine();
+        TuringMachine turingMachine = new TuringMachine(false);
         turingMachine.Run();
     }
 }
